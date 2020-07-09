@@ -66,5 +66,4 @@ class clientManager:
 							}
 						}
 					)
-		print(mwsObject)	
 		return mwsObject

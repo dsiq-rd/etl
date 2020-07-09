@@ -133,7 +133,7 @@ class mwsProcessLog(Base):
 	ReportType = Column(String)
 	ReportProcessingStatus = Column(String)
 	EndDate = Column(DateTime)
-	Scheduled = Column(Boolean)
+	Scheduled = Column(String)
 	ReportRequestId = Column(String)
 	StartDate = Column(DateTime)
 	SubmittedDate = Column(DateTime)
