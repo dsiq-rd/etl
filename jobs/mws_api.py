@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 import config
 import mws
+from mws import MWSError
 import os
 import time
 
@@ -20,32 +21,38 @@ session = Session()
 class mwsRequestMaker:
 
 	def requestReports(kwargs):
-		response = []
-		reportType = ['_GET_MERCHANT_LISTINGS_ALL_DATA_',
-		'_GET_MERCHANT_LISTINGS_DEFECT_DATA_']
-		# '_GET_REFERRAL_FEE_PREVIEW_REPORT_',
-		# '_GET_FLAT_FILE_ALL_ORDERS_DATA_BY_LAST_UPDATE_',
-		# '_GET_SELLER_FEEDBACK_DATA_',
-		# '_GET_AFN_INVENTORY_DATA_',
-		# '_GET_STRANDED_INVENTORY_LOADER_DATA_',
-		# '_GET_EXCESS_INVENTORY_DATA_',
-		# '_GET_GST_MTR_B2B_CUSTOM_',
-		# '_GET_GST_MTR_B2C_CUSTOM_']
+		try:
+			response = []
+			reportType = ['_GET_MERCHANT_LISTINGS_ALL_DATA_',
+			'_GET_MERCHANT_LISTINGS_DEFECT_DATA_',
+			'_GET_REFERRAL_FEE_PREVIEW_REPORT_',
+			'_GET_FLAT_FILE_ALL_ORDERS_DATA_BY_LAST_UPDATE_',
+			'_GET_SELLER_FEEDBACK_DATA_',
+			'_GET_AFN_INVENTORY_DATA_',
+			'_GET_STRANDED_INVENTORY_LOADER_DATA_',
+			'_GET_EXCESS_INVENTORY_DATA_',
+			'_GET_GST_MTR_B2B_CUSTOM_',
+			'_GET_GST_MTR_B2C_CUSTOM_']
 
-		reportobj = mws.Reports(
-			kwargs['access_key'],
-			kwargs['secret_key'],
-			kwargs['account_id'],
-			region=kwargs['region'],
-			auth_token=kwargs['mws_auth_token']
-			)
-		
-		for typeOfReport in reportType:
-			request = reportobj.request_report(typeOfReport)
-			response.append(request.parsed)
-			time.sleep(2)	
-		
-		return responseProcessor.mwsResponseProcessor(response, '1')
+			reportobj = mws.Reports(
+				kwargs['access_key'],
+				kwargs['secret_key'],
+				kwargs['account_id'],
+				region=kwargs['region'],
+				auth_token=kwargs['mws_auth_token']
+				)
+			
+			for typeOfReport in reportType:
+				request = reportobj.request_report(typeOfReport)
+				response.append(request.parsed)
+				time.sleep(5)	
+			
+			return responseProcessor.mwsResponseProcessor(response, '1')
+		except MWSError as e:
+			res = e.response
+			print(res.reason)
+			print(res.status_code)
+			print(res.text)
 
 
 	def requestOrder(self, kwargs):
